@@ -42,12 +42,11 @@ async function Login(props: Props) {
       <>
         <span>You will be redirected, please wait...</span>
         <Script id="loginConstants">
-          {`const TENANT = "${process.env.NEXT_PUBLIC_TENANT}";
+          {`
+          const TENANT = "${process.env.NEXT_PUBLIC_TENANT}";
           const CLIENT_ID = "${process.env.NEXT_PUBLIC_CLIENT_ID}";
-          const REDIRECT_URI = "${
-            (process.env.NEXT_PUBLIC_HOST ?? "http://localhost:3000") +
-            process.env.NEXT_PUBLIC_REDIRECT_URI
-          }";`}
+          const HOST = "${process.env.NEXT_PUBLIC_HOST}"
+          const REDIRECT_URI = "${process.env.NEXT_PUBLIC_REDIRECT_URI}";`}
         </Script>
         <Script src="/scripts/login.js" />
       </>
