@@ -27,7 +27,7 @@ function Play() {
 }
 
 const getUser = async (): Promise<UserRes> => {
-  const res: UserRes = await fetch("http://localhost:3000/api/username", {
+  const res: UserRes = await fetch(process.env.NEXT_PUBLIC_HOST + "/api/username", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,15 +43,18 @@ const getUser = async (): Promise<UserRes> => {
 };
 
 const refreshToken = async () => {
-  const res: RefreshTokenRes = await fetch("http://localhost:3000/api/refreshToken", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      jwt: window.localStorage.getItem("jwt"),
-    }),
-  }).then((response) => response.json());
+  const res: RefreshTokenRes = await fetch(
+    process.env.NEXT_PUBLIC_HOST + "/api/refreshToken",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jwt: window.localStorage.getItem("jwt"),
+      }),
+    }
+  ).then((response) => response.json());
 
   if (res.error) window.location.href = "/login";
 

@@ -2,7 +2,7 @@ const login = async () => {
   const jwt = window.localStorage.getItem("jwt");
 
   if (jwt) {
-    const res = await fetch("http://localhost:3000/api/refreshToken", {
+    const res = await fetch(process.env.NEXT_PUBLIC_HOST + "/api/refreshToken", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
