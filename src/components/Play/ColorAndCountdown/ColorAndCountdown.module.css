@@ -1,0 +1,30 @@
+.container {
+  margin-top: 50px;
+  background: var(--text);
+  border-radius: 999px;
+  width: fit-content;
+  padding: 10px 10px;
+  box-shadow: 0 0 20px 5px rgba(41, 59, 112, 0.25);
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.countdown {
+  color: var(--background);
+  font-size: 20px;
+  margin: 0 30px;
+}
+
+.selectedColor {
+  background: var(--background);
+  height: 100%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+}
+
+.selectedColor:hover {
+  cursor: pointer;
+}
