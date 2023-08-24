@@ -17,6 +17,7 @@ async function Login(props: Props) {
     // 2nd
     const tokenObj = await getToken(code);
     const userInfo = await getUser(tokenObj.access_token);
+
     if (tokenObj.error || !userInfo) {
       return <Redirect url="/login" />;
     }
@@ -77,7 +78,7 @@ const getToken = async (code: string): Promise<TokenRes> => {
       &code=${code}
       &redirect_uri=${
         (process.env.NEXT_PUBLIC_HOST ?? "http://localhost:3000") +
-        process.env.NEXT_PUBLIC_HOST
+        process.env.NEXT_PUBLIC_REDIRECT_URI
       }
       &grant_type=authorization_code
       &client_secret=${process.env.CLIENT_SECRET}`,
