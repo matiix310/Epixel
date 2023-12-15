@@ -1,26 +1,26 @@
 .background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--text);
 }
 
 .topTitle {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  color: var(--background);
-  font-size: 40px;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: var(--background);
+    font-size: 40px;
 }
 
 .rightContainer {
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  width: auto;
-  top: 20px;
-  right: 20px;
-  align-items: end;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    top: 20px;
+    right: 20px;
+    align-items: flex-end;
 }

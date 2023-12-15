@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma-studio": "dotenv -e .env.development.local -- pnpx prisma studio",
+    "prisma-migrate-dev": "dotenv -e .env.development.local -- pnpx prisma migrate dev"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -14,18 +16,22 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@types/node": "20.4.5",
+    "@prisma/client": "^5.7.0",
     "@types/react": "18.2.17",
     "@types/react-dom": "18.2.7",
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
     "jsonwebtoken": "^9.0.1",
     "next": "13.4.12",
+    "next-auth": "^4.24.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "typescript": "5.1.6"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.2"
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/node": "20.4.5",
+    "prisma": "^5.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "5.1.6"
   }
 }

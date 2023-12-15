@@ -1,19 +1,19 @@
-"use client";
-
 import React from "react";
 import Button from "../Button";
-import styles from "./LoginButton.module.css";
 
-function LoginButton() {
+type Props = {
+  label: string,
+  submit?: boolean
+  onClick?: () => void
+  buttonClass?: string,
+}
+
+function LoginButton({ label, buttonClass, onClick = () => {}, submit = false }: Props) {
   return (
-    <Button primary={true} className={styles.loginButton} onClick={login}>
-      SE CONNECTER
+    <Button primary={true} onClick={onClick} submit={submit} className={buttonClass}>
+      {label}
     </Button>
   );
 }
-
-const login = () => {
-  window.location.href = `/login`;
-};
 
 export default LoginButton;

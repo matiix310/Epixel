@@ -6,6 +6,7 @@ type Props = {
   primary: boolean;
   className?: string;
   onClick?: () => void;
+  submit?: boolean;
 };
 
 function Button({
@@ -13,6 +14,7 @@ function Button({
   className = "",
   onClick = () => {},
   children,
+  submit = false
 }: PropsWithChildren<Props>) {
   return (
     <>

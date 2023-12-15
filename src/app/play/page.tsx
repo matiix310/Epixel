@@ -1,64 +1,29 @@
-"use client";
-
 import styles from "./page.module.css";
-import { RefreshTokenRes } from "../api/refreshToken/route";
 import UserButton from "@/components/UserButton";
-import { useEffect, useState } from "react";
-import { UserRes } from "../api/username/route";
 import ColorAndCountdown from "@/components/Play/ColorAndCountdown";
+import { getServerSession } from "next-auth";
+import { options as authOptions } from '@/app/api/auth/[...nextauth]/options'
+import { redirect } from "next/navigation";
 
-function Play() {
-  const [user, setUser] = useState<string>("");
+async function Play() {
+  const session = await getServerSession(authOptions);
 
-  useEffect(() => {
-    getUser().then((user) => setUser(user.username!));
-  }, []);
+  if (!session) {
+    redirect('/api/auth/signin?callbackUrl=/play');
+  }
+
+  const username = session.user!.name ?? "NoName"
 
   return (
     <>
       <span className={styles.background} />
       <span className={styles.topTitle}>EPIXEL</span>
       <div className={styles.rightContainer}>
-        {user == "" ? "" : <UserButton userName={user} />}
+        <UserButton userName={username} />
         <ColorAndCountdown />
       </div>
     </>
   );
 }
-
-const getUser = async (): Promise<UserRes> => {
-  const res: UserRes = await fetch(process.env.NEXT_PUBLIC_HOST + "/api/username", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      jwt: window.localStorage.getItem("jwt"),
-    }),
-  }).then((response) => response.json());
-
-  if (res.error) window.location.href = "/login";
-
-  return res;
-};
-
-const refreshToken = async () => {
-  const res: RefreshTokenRes = await fetch(
-    process.env.NEXT_PUBLIC_HOST + "/api/refreshToken",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jwt: window.localStorage.getItem("jwt"),
-      }),
-    }
-  ).then((response) => response.json());
-
-  if (res.error) window.location.href = "/login";
-
-  window.localStorage.setItem("jwt", res.jwt!);
-};
 
 export default Play;
