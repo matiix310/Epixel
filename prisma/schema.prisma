@@ -3,24 +3,24 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  username  String
-  password  String
-  createdAt Int
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String?
+  createdAt DateTime @default(now())
   pixels    Pixel[]
 }
 
 model Pixel {
-  id     Int  @id @default(autoincrement())
-  color  Int
-  x      Int
-  y      Int
-  User   User @relation(fields: [userId], references: [id])
-  userId Int
+  id        Int      @id @default(autoincrement())
+  color     Int
+  x         Int
+  y         Int
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  userId    Int
 }

@@ -1,9 +1,11 @@
 import styles from "./page.module.css";
-import UserButton from "@/components/UserButton";
-import ColorAndCountdown from "@/components/Play/ColorAndCountdown";
 import { getServerSession } from "next-auth";
 import { options as authOptions } from '@/app/api/auth/[...nextauth]/options'
 import { redirect } from "next/navigation";
+
+// components
+import ColorAndCountdown from "@/components/Play/ColorAndCountdown";
+import GameCanvas from "@/components/GameCanvas";
 
 async function Play() {
   const session = await getServerSession(authOptions);
@@ -17,9 +19,9 @@ async function Play() {
   return (
     <>
       <span className={styles.background} />
+      <GameCanvas/>
       <span className={styles.topTitle}>EPIXEL</span>
       <div className={styles.rightContainer}>
-        <UserButton userName={username} />
         <ColorAndCountdown />
       </div>
     </>

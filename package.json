@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "prisma-studio": "dotenv -e .env.development.local -- pnpx prisma studio",
-    "prisma-migrate-dev": "dotenv -e .env.development.local -- pnpx prisma migrate dev"
+    "prisma-migrate-dev": "dotenv -e .env.development.local -- pnpx prisma migrate dev",
+    "pull-dev": "vercel env pull .env.development.local",
+    "pull-prod": "vercel env pull .env.production.local"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
