@@ -13,7 +13,7 @@ export const options: NextAuthOptions = {
       clientSecret: process.env.AZURE_AD_CLIENT_SECRET as string,
       tenantId: process.env.AZURE_AD_TENANT_ID,
       async profile(profile) {
-        let user = await prisma.user.findFirst({
+        let user = await prisma.user.findUnique({
           where: {
             username: profile.name as string,
           },
@@ -23,8 +23,6 @@ export const options: NextAuthOptions = {
           user = await prisma.user.create({
             data: {
               username: profile.name as string,
-              password: "",
-              createdAt: Date.now(),
             },
           });
         }
@@ -68,7 +66,7 @@ export const options: NextAuthOptions = {
         }
 
         // get the user with the same userId is the database
-        const user = await prisma.user.findFirst({
+        const user = await prisma.user.findUnique({
           where: {
             username: credentials.username as string,
           },
