@@ -1,6 +1,6 @@
 import LoginInPage from "./login";
 import { getServerSession } from "next-auth";
-import { options as authOptions } from "/src/app/api/auth/[...nextauth]/options";
+import { options as authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
 
 export default async function loginChecker({

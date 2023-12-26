@@ -1,8 +1,8 @@
 "use client";
 
-import LoginButton from "/src/components/LoginButton/index";
+import LoginButton from "@/components/LoginButton/index";
 import styles from "./page.module.css";
-import SquareEffect from "/src/components/SquareEffect";
+import SquareEffect from "@/components/SquareEffect";
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 

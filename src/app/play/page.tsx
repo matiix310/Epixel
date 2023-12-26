@@ -1,11 +1,11 @@
 import styles from "./page.module.css";
 import { getServerSession } from "next-auth";
-import { options as authOptions } from "/src/app/api/auth/[...nextauth]/options";
+import { options as authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
 
 // components
-import ColorAndCountdown from "/src/components/Play/ColorAndCountdown";
-import GameCanvas from "/src/components/Play/GameCanvas";
+import ColorAndCountdown from "@/components/Play/ColorAndCountdown";
+import GameCanvas from "@/components/Play/GameCanvas";
 
 async function Play() {
   const session = await getServerSession(authOptions);

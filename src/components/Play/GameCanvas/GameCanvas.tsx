@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./GameCanvas.module.css";
-import LoadingIcon from "/src/components/LoadingIcon";
+import LoadingIcon from "@/components/LoadingIcon";
 import moment from "moment";
 import "moment/locale/fr";
 
