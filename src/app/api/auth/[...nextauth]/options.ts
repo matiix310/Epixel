@@ -24,7 +24,7 @@ export const options: NextAuthOptions = {
             data: {
               username: profile.name as string,
               password: "",
-              createdAt: Date.now().toString(),
+              createdAt: Date.now(),
             },
           });
         }
