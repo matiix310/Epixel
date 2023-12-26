@@ -68,9 +68,9 @@ export const options: NextAuthOptions = {
         }
 
         // get the user with the same userId is the database
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.findFirst({
           where: {
-            username: credentials.username,
+            username: credentials.username as string,
           },
         });
 
