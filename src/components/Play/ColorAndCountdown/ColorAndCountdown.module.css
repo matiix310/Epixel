@@ -89,12 +89,14 @@
   row-gap: 10px;
   transform: translateX(-150%);
   opacity: 0;
+  height: 0;
   transition: all 0.3s ease-in-out;
 }
 
 .visible {
   transform: translateX(0);
   opacity: 1;
+  height: 100%;
 }
 
 .gridItem {

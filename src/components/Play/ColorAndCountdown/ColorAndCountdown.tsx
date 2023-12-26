@@ -3,9 +3,17 @@
 import React, { MouseEventHandler, useRef, useState } from "react";
 import styles from "./ColorAndCountdown.module.css";
 import Image from "next/image";
+import moment from "moment";
 
-function ColorAndCountdown() {
+type ColorAndCountdownProps = {
+  onPlacePixel: (colorHex: string) => void;
+};
+
+function ColorAndCountdown({ onPlacePixel }: ColorAndCountdownProps) {
   var colorPalette = useRef<HTMLDivElement>(null);
+  var lastPlace = useRef<number>(0);
+  const delay = 10; // delay in second
+  var [countdown, setCountdown] = useState<string>(delay + ":00");
 
   const colorsHex = [
     "#000000",
@@ -64,8 +72,35 @@ function ColorAndCountdown() {
 
   const placePixel: MouseEventHandler<HTMLSpanElement> = (e) => {
     // TODO
-    const span = e.target as HTMLSpanElement;
-    console.log(`placing pixel\nColor: ${selectedColor}`);
+
+    const now = Date.now();
+
+    if (now - lastPlace.current < 1000 * delay) return;
+    lastPlace.current = now;
+
+    const span = e.currentTarget as HTMLSpanElement;
+
+    if (!span.classList.contains(styles.disabled)) span.classList.add(styles.disabled);
+
+    setTimeout(() => {
+      if (span.classList.contains(styles.disabled))
+        span.classList.remove(styles.disabled);
+    }, 1000 * delay);
+
+    const displayCountdown = () => {
+      const realNow = Date.now();
+      if (now + delay * 1000 <= realNow) {
+        setCountdown(delay + ":00");
+        return;
+      }
+
+      setCountdown(moment(delay * 1000 - (realNow - now)).format("s:S0"));
+      requestAnimationFrame(displayCountdown);
+    };
+
+    requestAnimationFrame(displayCountdown);
+
+    onPlacePixel(selectedColor);
   };
 
   return (
@@ -82,7 +117,7 @@ function ColorAndCountdown() {
               onClick={handleColorSelectorClick}
             ></span>
           </div>
-          <span className={styles.countdown}>4:15</span>
+          <span className={styles.countdown}>{countdown}</span>
         </div>
         <div ref={colorPalette} className={styles.colorPalette}>
           {colorsHex.map((colorHex, index) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
 import styles from "./GameCanvas.module.css";
 import LoadingIcon from "@/components/LoadingIcon";
 import moment from "moment";
@@ -18,7 +18,11 @@ type Canvas = {
   tiles: Tile[];
 };
 
-export default function GameCanvas() {
+type GameCanvasProps = {
+  selectedPixel: MutableRefObject<{ x: number; y: number }>;
+};
+
+export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
   const [canvasLoaded, setCanvasLoaded] = useState<boolean>(false);
 
   var identifierName = useRef<HTMLHeadingElement>(null);
@@ -114,6 +118,12 @@ export default function GameCanvas() {
         const pixel = {
           x: Math.floor(crosshair_pos.x / squareSize.current),
           y: Math.floor(crosshair_pos.y / squareSize.current),
+        };
+
+        // set the new selectedPixel
+        selectedPixel.current = {
+          x: pixel.x,
+          y: pixel.y,
         };
 
         // draw the box
