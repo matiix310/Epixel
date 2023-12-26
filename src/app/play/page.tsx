@@ -15,4 +15,4 @@ async function PlayServer() {
   return <Play username={username} />;
 }
 
-export default Play;
+export default PlayServer;
