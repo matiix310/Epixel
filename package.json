@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "postinstall": "npx primsa generate",
+    "build": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "prisma-studio": "dotenv -e .env.development.local -- pnpx prisma studio",
