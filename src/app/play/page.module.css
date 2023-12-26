@@ -8,19 +8,17 @@
 }
 
 .topTitle {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    color: var(--background);
-    font-size: 40px;
+    color: var(--text);
+    font-size: 50px;
+    text-shadow: -3px -3px 0 var(--background), 3px -3px 0 var(--background), -3px 3px 0 var(--background), 3px 3px 0 var(--background);
 }
 
-.rightContainer {
+.leftContainer {
     position: fixed;
     display: flex;
     flex-direction: column;
     width: auto;
     top: 20px;
-    right: 20px;
+    left: 20px;
     align-items: flex-end;
 }

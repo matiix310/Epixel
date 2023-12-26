@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 // components
 import ColorAndCountdown from "@/components/Play/ColorAndCountdown";
-import GameCanvas from "@/components/GameCanvas";
+import GameCanvas from "@/components/Play/GameCanvas";
 
 async function Play() {
   const session = await getServerSession(authOptions);
@@ -20,8 +20,8 @@ async function Play() {
     <>
       <span className={styles.background} />
       <GameCanvas/>
-      <span className={styles.topTitle}>EPIXEL</span>
-      <div className={styles.rightContainer}>
+      <div className={styles.leftContainer}>
+        <span className={styles.topTitle}>EPIXEL</span>
         <ColorAndCountdown />
       </div>
     </>

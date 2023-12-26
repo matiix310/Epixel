@@ -1,0 +1,55 @@
+.gameCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--background);
+}
+
+.loadingCanvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 8%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+}
+
+.loadingCanvas h1 {
+  margin-left: 5%;
+  text-align: center;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--background);
+}
+
+.pixelIdentifier {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-shadow: -3px -3px 0 var(--background), 3px -3px 0 var(--background),
+    -3px 3px 0 var(--background), 3px 3px 0 var(--background);
+}
+
+.pixelIdentifier :nth-child(1) {
+  font-size: 20px;
+}
+
+.pixelIdentifier :nth-child(2),
+.pixelIdentifier :nth-child(3) {
+  font-size: 15px;
+}

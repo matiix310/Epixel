@@ -1,0 +1,54 @@
+.loadingContainer {
+    position: relative;
+    aspect-ratio: 1;
+    height: 100%;
+}
+
+.loadingContainer span {
+    aspect-ratio: 1;
+    width: 30%;
+    background-color: var(--text);
+    position: absolute;
+}
+
+.loadingContainer :nth-child(1) {
+    bottom: 52%;
+    right: 52%;
+    animation: loadingAnimation infinite 2s 0s;
+}
+
+.loadingContainer :nth-child(2) {
+    bottom: 52%;
+    left: 52%;
+    animation: loadingAnimation infinite 2s .25s;
+}
+
+.loadingContainer :nth-child(3) {
+    top: 52%;
+    left: 52%;
+    animation: loadingAnimation infinite 2s .5s;
+}
+
+.loadingContainer :nth-child(4) {
+    top: 52%;
+    right: 52%;
+    animation: loadingAnimation infinite 2s .75s;
+}
+
+@keyframes loadingAnimation {
+    0% {
+        width: 20%;
+    }
+    25% {
+        width: 20%;
+    }
+    50% {
+        width: 50%;
+    }
+    75% {
+        width: 50%;
+    }
+    100% {
+        width: 20%;
+    }
+}

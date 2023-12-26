@@ -1,30 +1,121 @@
 .container {
-  margin-top: 50px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.topContainer {
   background: var(--text);
   border-radius: 999px;
-  width: fit-content;
-  padding: 10px 10px;
-  box-shadow: 0 0 20px 5px rgba(41, 59, 112, 0.25);
+  padding: 5px 10px;
+  border: 3px solid var(--background);
   display: flex;
   flex-direction: row;
   height: 50px;
+  width: 100%;
   align-items: center;
   justify-content: space-between;
 }
 
 .countdown {
+  flex: 1;
   color: var(--background);
   font-size: 20px;
-  margin: 0 30px;
+  width: 100%;
+  text-align: center;
+}
+
+.buttonContainer {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.buttonContainer span {
+  height: 100%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  border: 3px solid var(--background);
 }
 
 .selectedColor {
   background: var(--background);
-  height: 100%;
-  aspect-ratio: 1;
-  border-radius: 999px;
+}
+
+.placePixel {
+  position: relative;
+  background: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placePixel:hover {
+  cursor: pointer;
+}
+
+.placePixel img {
+  width: 70%;
+  height: 70%;
 }
 
 .selectedColor:hover {
   cursor: pointer;
+}
+
+.placePixel.disabled {
+  opacity: 0.5;
+}
+
+.placePixel.disabled:hover {
+  cursor: not-allowed;
+}
+
+.colorPalette {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  background-color: var(--text);
+  border-radius: 30px;
+
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto auto;
+  row-gap: 10px;
+  transform: translateX(-150%);
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.gridItem {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gridItem span:hover {
+  cursor: pointer;
+}
+
+.gridItem span {
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  border: 1px solid #000;
+}
+
+.selected {
+  border: 3px solid var(--background) !important;
 }
