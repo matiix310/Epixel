@@ -23,6 +23,8 @@ export const options: NextAuthOptions = {
           user = await prisma.user.create({
             data: {
               username: profile.name as string,
+              password: null,
+              createdAt: Date.now().toString(),
             },
           });
         }
