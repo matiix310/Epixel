@@ -13,7 +13,7 @@ export const options: NextAuthOptions = {
       clientSecret: process.env.AZURE_AD_CLIENT_SECRET as string,
       tenantId: process.env.AZURE_AD_TENANT_ID,
       async profile(profile) {
-        let user = await prisma.user.findUnique({
+        let user = await prisma.user.findFirst({
           where: {
             username: profile.name as string,
           },
