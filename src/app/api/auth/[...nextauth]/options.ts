@@ -28,7 +28,7 @@ export const options: NextAuthOptions = {
         }
 
         return {
-          id: user.id.toString(),
+          id: user.username,
           name: user.username,
         };
       },
@@ -80,7 +80,7 @@ export const options: NextAuthOptions = {
           .update(credentials.password)
           .digest("hex");
         if (hashedPassword === user.password)
-          return { id: user.id.toString(), name: user.username };
+          return { id: user.username, name: user.username };
 
         return null;
       },

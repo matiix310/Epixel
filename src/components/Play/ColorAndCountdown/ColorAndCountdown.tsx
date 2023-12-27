@@ -4,33 +4,18 @@ import React, { MouseEventHandler, useRef, useState } from "react";
 import styles from "./ColorAndCountdown.module.css";
 import Image from "next/image";
 import moment from "moment";
+import { colorsHex } from "@/app/api/tiles/route";
 
 type ColorAndCountdownProps = {
   onPlacePixel: (colorHex: string) => void;
+  canvasLoaded: boolean;
 };
 
-function ColorAndCountdown({ onPlacePixel }: ColorAndCountdownProps) {
+function ColorAndCountdown({ onPlacePixel, canvasLoaded }: ColorAndCountdownProps) {
   var colorPalette = useRef<HTMLDivElement>(null);
   var lastPlace = useRef<number>(0);
   const delay = 10; // delay in second
   var [countdown, setCountdown] = useState<string>(delay + ":00");
-
-  const colorsHex = [
-    "#000000",
-    "#ff4538",
-    "#ffa938",
-    "#f2ff38",
-    "#8fff38",
-    "#38ff45",
-    "#38ffa9",
-    "#38f2ff",
-    "#388fff",
-    "#4538ff",
-    "#a838ff",
-    "#ff38f2",
-    "#ff388e",
-    "#ffffff",
-  ];
 
   var [selectedColor, setSelectedColor] = useState<string>(colorsHex[0]);
 
@@ -73,6 +58,8 @@ function ColorAndCountdown({ onPlacePixel }: ColorAndCountdownProps) {
   const placePixel: MouseEventHandler<HTMLSpanElement> = (e) => {
     // TODO
 
+    if (!canvasLoaded) return;
+
     const now = Date.now();
 
     if (now - lastPlace.current < 1000 * delay) return;
@@ -108,7 +95,12 @@ function ColorAndCountdown({ onPlacePixel }: ColorAndCountdownProps) {
       <div className={styles.container}>
         <div className={styles.topContainer}>
           <div className={styles.buttonContainer}>
-            <span className={styles.placePixel} onClick={placePixel}>
+            <span
+              className={[styles.placePixel, canvasLoaded ? "" : styles.disabled].join(
+                " "
+              )}
+              onClick={placePixel}
+            >
               <Image alt="" src="/paintbrush.svg" width="10" height="10" />
             </span>
             <span

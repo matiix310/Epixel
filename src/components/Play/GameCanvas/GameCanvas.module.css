@@ -50,6 +50,7 @@
 }
 
 .pixelIdentifier :nth-child(2),
-.pixelIdentifier :nth-child(3) {
+.pixelIdentifier :nth-child(3),
+.pixelIdentifier :nth-child(4) {
   font-size: 15px;
 }

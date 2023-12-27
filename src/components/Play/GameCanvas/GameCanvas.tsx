@@ -6,42 +6,40 @@ import LoadingIcon from "@/components/LoadingIcon";
 import moment from "moment";
 import "moment/locale/fr";
 
+// types for the api requests
+import { Tile, TilesResponse } from "@/app/api/tiles/route";
+
 moment().locale("fr");
-
-type Tile = {
-  color: string;
-  author: string;
-  timestamp: number;
-};
-
-type Canvas = {
-  tiles: Tile[];
-};
 
 type GameCanvasProps = {
   selectedPixel: MutableRefObject<{ x: number; y: number }>;
+  onCanvasLoaded: () => void;
+  canvasSize: MutableRefObject<{ width: number; height: number }>;
 };
 
-export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
+export default function GameCanvas({
+  selectedPixel,
+  onCanvasLoaded,
+  canvasSize,
+}: GameCanvasProps) {
   const [canvasLoaded, setCanvasLoaded] = useState<boolean>(false);
 
   var identifierName = useRef<HTMLHeadingElement>(null);
   var identifierDate = useRef<HTMLHeadingElement>(null);
   var identifierHour = useRef<HTMLHeadingElement>(null);
+  var identifierPosition = useRef<HTMLHeadingElement>(null);
 
   var requestRef = useRef<number>(0);
 
   var canvas = useRef<HTMLCanvasElement>(null);
   var tiles = useRef<Tile[]>([]);
+
   var squareSize = useRef<number>(5);
   var origin = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   var oldOrigin = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   var clicking = useRef(false);
   var clickedAt = useRef(0);
-
-  const canvasWidth = 10;
-  const canvasHeight = 10;
 
   const updateCanvas = useCallback(() => {
     if (requestRef.current) {
@@ -83,15 +81,15 @@ export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
 
       for (
         let x = x_min < 0 ? 0 : x_min;
-        x < (x_max > canvasWidth ? canvasWidth : x_max);
+        x < (x_max > canvasSize.current.width ? canvasSize.current.width : x_max);
         x++
       ) {
         for (
           let y = y_min < 0 ? 0 : y_min;
-          y < (y_max > canvasHeight ? canvasHeight : y_max);
+          y < (y_max > canvasSize.current.height ? canvasSize.current.height : y_max);
           y++
         ) {
-          const tile = tiles.current[y * canvasWidth + x];
+          const tile = tiles.current[y * canvasSize.current.width + x];
           ctx.fillStyle = tile.color;
           ctx.fillRect(
             x * squareSize.current,
@@ -110,9 +108,9 @@ export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
       // draw the box for the selected pixel
       if (
         crosshair_pos.x >= 0 &&
-        crosshair_pos.x < canvasWidth * squareSize.current &&
+        crosshair_pos.x < canvasSize.current.width * squareSize.current &&
         crosshair_pos.y >= 0 &&
-        crosshair_pos.y < canvasHeight * squareSize.current
+        crosshair_pos.y < canvasSize.current.height * squareSize.current
       ) {
         // get the selected pixel
         const pixel = {
@@ -136,7 +134,7 @@ export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
           squareSize.current + margin
         );
 
-        ctx.fillStyle = tiles.current[pixel.y * canvasWidth + pixel.x].color;
+        ctx.fillStyle = tiles.current[pixel.y * canvasSize.current.width + pixel.x].color;
         ctx.fillRect(
           pixel.x * squareSize.current,
           pixel.y * squareSize.current,
@@ -145,19 +143,32 @@ export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
         );
 
         // fill the identifiers
-        if (identifierName.current && identifierDate.current && identifierHour.current) {
-          const selectedTile = tiles.current[pixel.y * canvasWidth + pixel.x];
-          identifierName.current.textContent = selectedTile.author;
-          const placedAt = moment(selectedTile.timestamp);
+        if (
+          identifierName.current &&
+          identifierDate.current &&
+          identifierHour.current &&
+          identifierPosition.current
+        ) {
+          const selectedTile =
+            tiles.current[pixel.y * canvasSize.current.width + pixel.x];
+          identifierName.current.textContent = selectedTile.authorName;
+          const placedAt = moment(selectedTile.updatedAt);
           identifierDate.current.textContent = placedAt.format("D MMMM YYYY");
           identifierHour.current.textContent = placedAt.format("HH:mm:ss");
+          identifierPosition.current.textContent = `(${pixel.x}, ${pixel.y})`;
         }
       } else {
         // remove the identifiers
-        if (identifierDate.current && identifierHour.current && identifierName.current) {
+        if (
+          identifierDate.current &&
+          identifierHour.current &&
+          identifierName.current &&
+          identifierPosition.current
+        ) {
           identifierDate.current.textContent = "";
           identifierHour.current.textContent = "";
           identifierName.current.textContent = "";
+          identifierPosition.current.textContent = "";
         }
       }
 
@@ -189,21 +200,13 @@ export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
     };
 
     requestRef.current = window.requestAnimationFrame(animate);
-  }, []);
-
-  useEffect(() => {
-    // laod the tiles
-    getTiles().then((t) => {
-      tiles.current = t;
-      setCanvasLoaded(true);
-    });
-  }, []);
+  }, [selectedPixel, canvasSize]);
 
   // Update the canvas after the window is resized
   useEffect(() => {
     squareSize.current =
       Math.min(window.innerHeight, window.innerWidth) /
-      Math.max(canvasWidth, canvasHeight);
+      Math.max(canvasSize.current.width, canvasSize.current.height);
 
     const resizeCanvas = () => {
       if (canvas.current) {
@@ -222,7 +225,7 @@ export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
     return () => {
       window.removeEventListener("resize", resizeCanvas);
     };
-  }, [canvasLoaded, updateCanvas]);
+  }, [canvasLoaded, updateCanvas, canvasSize]);
 
   // Set the canvas listeners and update the tiles
   // when the canvas is loaded
@@ -251,9 +254,9 @@ export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
 
         if (
           pixel.x < 0 ||
-          pixel.x >= canvasWidth ||
+          pixel.x >= canvasSize.current.width ||
           pixel.y < 0 ||
-          pixel.y >= canvasHeight
+          pixel.y >= canvasSize.current.height
         )
           return;
 
@@ -281,11 +284,11 @@ export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
     const wheel = (e: WheelEvent) => {
       e.preventDefault();
 
-      const dy = -e.deltaY / canvasWidth;
+      const dy = -e.deltaY / canvasSize.current.width;
       if (
         dy < 0 &&
-        ((squareSize.current + dy) * canvasWidth <= window.innerWidth / 3 ||
-          (squareSize.current + dy) * canvasHeight <= window.innerHeight / 3)
+        ((squareSize.current + dy) * canvasSize.current.width <= window.innerWidth / 3 ||
+          (squareSize.current + dy) * canvasSize.current.height <= window.innerHeight / 3)
       )
         return;
 
@@ -347,11 +350,29 @@ export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
 
       cCanvas.removeEventListener("wheel", wheel);
     };
-  }, [canvasLoaded, updateCanvas]);
+  }, [canvasLoaded, updateCanvas, canvasSize]);
 
   useEffect(() => {
-    updateCanvas();
-  }, [updateCanvas]);
+    if (canvasLoaded) return;
+    fetch("/api/tiles").then(async (res) => {
+      const json: TilesResponse = await res.json();
+
+      if (json.error) {
+        alert(
+          "Can't laod the tiles from the server! Please verify your internet connection or contact an administator."
+        );
+        return;
+      }
+
+      tiles.current = json.data.tiles;
+      canvasSize.current = {
+        width: json.data.width,
+        height: json.data.height,
+      };
+      setCanvasLoaded(true);
+      onCanvasLoaded();
+    });
+  }, [onCanvasLoaded, canvasSize, canvasLoaded]);
 
   if (!canvasLoaded) {
     return (
@@ -370,38 +391,11 @@ export default function GameCanvas({ selectedPixel }: GameCanvasProps) {
       <span className={styles.background}></span>
       <canvas ref={canvas} className={styles.gameCanvas} />
       <div className={styles.pixelIdentifier}>
-        <h1 ref={identifierName}>Lucas Stephan</h1>
-        <h1 ref={identifierDate}>10 mars 2023</h1>
-        <h1 ref={identifierHour}>20:15</h1>
+        <h1 ref={identifierName}></h1>
+        <h1 ref={identifierDate}></h1>
+        <h1 ref={identifierHour}></h1>
+        <h1 ref={identifierPosition}></h1>
       </div>
     </>
   );
 }
-
-const getTiles = async (): Promise<Tile[]> => {
-  // fetch the data from the api endpoint
-  // TODO
-  const canvas: Canvas = {
-    tiles: [],
-  };
-
-  const canvasWidth = 10;
-
-  for (let i = 0; i < canvasWidth * canvasWidth; i++) {
-    const c = Math.floor((i * 255) / (canvasWidth * canvasWidth - 1));
-    const sColor = (c + c * 16 * 16 + c * 16 * 16 * 16 * 16).toString(16);
-    canvas.tiles[i] = {
-      color: "#" + "0".repeat(6 - sColor.length) + sColor,
-      author: "matiix310",
-      timestamp: 0,
-    };
-  }
-
-  canvas.tiles[45] = {
-    color: "#ff0000",
-    author: "Lucas Stephan",
-    timestamp: Date.now(),
-  };
-
-  return canvas.tiles;
-};
