@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "pnpx prisma generate && next build",
+    "build-npm": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "prisma-studio": "dotenv -e .env.development.local -- pnpx prisma studio",
