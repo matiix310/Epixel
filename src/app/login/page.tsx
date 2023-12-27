@@ -8,6 +8,8 @@ export default async function loginChecker({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  console.log(process.env);
+
   const session = await getServerSession(authOptions);
 
   const callbackUrl = (searchParams.callbackUrl ?? "/") as string;
