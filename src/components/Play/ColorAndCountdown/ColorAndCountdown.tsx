@@ -5,7 +5,7 @@ import styles from "./ColorAndCountdown.module.css";
 import Image from "next/image";
 import moment from "moment";
 import { colorsHex } from "@/app/api/tiles/route";
-import { delay } from "@/app/api/tiles/[index]/route";
+import config from "@/config";
 
 type ColorAndCountdownProps = {
   onPlacePixel: (colorHex: string) => void;
@@ -15,7 +15,7 @@ type ColorAndCountdownProps = {
 function ColorAndCountdown({ onPlacePixel, canvasLoaded }: ColorAndCountdownProps) {
   var colorPalette = useRef<HTMLDivElement>(null);
   var lastPlace = useRef<number>(0);
-  var [countdown, setCountdown] = useState<string>(delay + ":00");
+  var [countdown, setCountdown] = useState<string>(config.delay + ":00");
 
   var [selectedColor, setSelectedColor] = useState<string>(colorsHex[0]);
 
@@ -62,7 +62,7 @@ function ColorAndCountdown({ onPlacePixel, canvasLoaded }: ColorAndCountdownProp
 
     const now = Date.now();
 
-    if (now - lastPlace.current < 1000 * delay) return;
+    if (now - lastPlace.current < 1000 * config.delay) return;
     lastPlace.current = now;
 
     const span = e.currentTarget as HTMLSpanElement;
@@ -72,16 +72,16 @@ function ColorAndCountdown({ onPlacePixel, canvasLoaded }: ColorAndCountdownProp
     setTimeout(() => {
       if (span.classList.contains(styles.disabled))
         span.classList.remove(styles.disabled);
-    }, 1000 * delay);
+    }, 1000 * config.delay);
 
     const displayCountdown = () => {
       const realNow = Date.now();
-      if (now + delay * 1000 <= realNow) {
-        setCountdown(delay + ":00");
+      if (now + config.delay * 1000 <= realNow) {
+        setCountdown(config.delay + ":00");
         return;
       }
 
-      setCountdown(moment(delay * 1000 - (realNow - now)).format("s:S0"));
+      setCountdown(moment(config.delay * 1000 - (realNow - now)).format("s:S0"));
       requestAnimationFrame(displayCountdown);
     };
 

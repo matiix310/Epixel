@@ -3,9 +3,7 @@
 import styles from "./page.module.css";
 import GameCanvas from "@/components/Play/GameCanvas";
 import ColorAndCountdown from "@/components/Play/ColorAndCountdown";
-import { useEffect, useRef, useState } from "react";
-import Pusher from "pusher-js";
-import { Tile } from "@/app/api/tiles/route";
+import { useRef, useState } from "react";
 
 type PlayProps = {
   username: string;

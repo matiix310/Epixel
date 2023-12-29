@@ -5,12 +5,11 @@ import { options as authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { ApiResponse } from "../../page";
 import { Tile, colorsHex } from "../route";
 import pusher from "@/clients/pusher";
+import config from "@/config";
 
 export type GetTileResponse = ApiResponse<Tile>;
 
 export type SetTileResponse = ApiResponse<Tile>;
-
-export const delay = 10;
 
 const lastTilePlaced: { [key: string]: number } = {};
 
@@ -27,10 +26,13 @@ const setTile = async (request: Request, { params }: { params: { index: string }
 
   const username = session.user!.name!;
 
-  if (lastTilePlaced[username] && Date.now() - lastTilePlaced[username] < delay * 1000) {
+  if (
+    lastTilePlaced[username] &&
+    Date.now() - lastTilePlaced[username] < config.delay * 1000
+  ) {
     return NextResponse.json({
       error: true,
-      message: "You must wait " + delay + " seconds between two tiles.",
+      message: "You must wait " + config.delay + " seconds between two tiles.",
       data: {},
     });
   }
