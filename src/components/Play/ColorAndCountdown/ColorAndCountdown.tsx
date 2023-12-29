@@ -5,6 +5,7 @@ import styles from "./ColorAndCountdown.module.css";
 import Image from "next/image";
 import moment from "moment";
 import { colorsHex } from "@/app/api/tiles/route";
+import { delay } from "@/app/api/tiles/[index]/route";
 
 type ColorAndCountdownProps = {
   onPlacePixel: (colorHex: string) => void;
@@ -14,7 +15,6 @@ type ColorAndCountdownProps = {
 function ColorAndCountdown({ onPlacePixel, canvasLoaded }: ColorAndCountdownProps) {
   var colorPalette = useRef<HTMLDivElement>(null);
   var lastPlace = useRef<number>(0);
-  const delay = 10; // delay in second
   var [countdown, setCountdown] = useState<string>(delay + ":00");
 
   var [selectedColor, setSelectedColor] = useState<string>(colorsHex[0]);

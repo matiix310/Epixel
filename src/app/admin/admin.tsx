@@ -1,4 +1,4 @@
-import prisma from "@/../prisma/client";
+import prisma from "@/clients/prisma";
 import React from "react";
 
 type Tile = {

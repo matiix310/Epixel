@@ -1,27 +1,18 @@
-import prisma from "@/../prisma/client";
+import prisma from "@/clients/prisma";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { options as authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { ApiResponse } from "../../page";
-import { colorsHex } from "../route";
+import { Tile, colorsHex } from "../route";
+import pusher from "@/clients/pusher";
 
-export type GetTileResponse = ApiResponse<{
-  id: number;
-  color: string;
-  updatedAt: Date;
-  index: number;
-  authorName: string;
-  canvasId: number;
-}>;
+export type GetTileResponse = ApiResponse<Tile>;
 
-export type SetTileResponse = ApiResponse<{
-  id: number;
-  color: string;
-  updatedAt: Date;
-  index: number;
-  authorName: string;
-  canvasId: number;
-}>;
+export type SetTileResponse = ApiResponse<Tile>;
+
+export const delay = 10;
+
+const lastTilePlaced: { [key: string]: number } = {};
 
 const setTile = async (request: Request, { params }: { params: { index: string } }) => {
   const session = await getServerSession(authOptions);
@@ -35,6 +26,16 @@ const setTile = async (request: Request, { params }: { params: { index: string }
   }
 
   const username = session.user!.name!;
+
+  if (lastTilePlaced[username] && Date.now() - lastTilePlaced[username] < delay * 1000) {
+    return NextResponse.json({
+      error: true,
+      message: "You must wait " + delay + " seconds between two tiles.",
+      data: {},
+    });
+  }
+
+  lastTilePlaced[username] = Date.now();
 
   const data = await request.json();
 
@@ -64,6 +65,15 @@ const setTile = async (request: Request, { params }: { params: { index: string }
     });
   }
 
+  const pusherData: Tile = {
+    authorName: username,
+    color: data.color,
+    index: index,
+    updatedAt: new Date(),
+  };
+
+  pusher.trigger("epixel", "tile-placed", pusherData);
+
   // get the tile id
   const tile = await prisma.tile.findFirst({
     where: {
@@ -72,6 +82,7 @@ const setTile = async (request: Request, { params }: { params: { index: string }
     },
     select: {
       id: true,
+      index: true,
     },
   });
 
@@ -84,7 +95,7 @@ const setTile = async (request: Request, { params }: { params: { index: string }
   }
 
   // update the tile
-  const newTile = await prisma.tile.update({
+  const newTile = (await prisma.tile.update({
     where: {
       id: tile.id,
     },
@@ -92,9 +103,15 @@ const setTile = async (request: Request, { params }: { params: { index: string }
       authorName: username,
       color: data.color,
     },
-  });
+    select: {
+      authorName: true,
+      color: true,
+      index: true,
+      updatedAt: true,
+    },
+  })) as Tile;
 
-  return NextResponse.json({
+  return NextResponse.json<SetTileResponse>({
     error: false,
     message: "",
     data: newTile,
@@ -122,12 +139,18 @@ const getTile = async (request: Request, { params }: { params: { index: string }
     });
   }
 
-  const tile = await prisma.tile.findFirst({
+  const tile = (await prisma.tile.findFirst({
     where: {
       index,
       canvasId: 1,
     },
-  });
+    select: {
+      authorName: true,
+      color: true,
+      index: true,
+      updatedAt: true,
+    },
+  })) as Tile;
 
   if (!tile) {
     return NextResponse.json({
@@ -137,7 +160,7 @@ const getTile = async (request: Request, { params }: { params: { index: string }
     });
   }
 
-  return NextResponse.json({
+  return NextResponse.json<GetTileResponse>({
     error: false,
     message: "",
     data: tile,

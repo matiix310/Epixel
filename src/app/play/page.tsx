@@ -12,7 +12,13 @@ async function PlayServer() {
 
   const username = session.user!.name ?? "NoName";
 
-  return <Play username={username} />;
+  return (
+    <Play
+      username={username}
+      pusherKey={process.env.PUSHER_KEY as string}
+      pusherCluster={process.env.PUSHER_CLUSTER as string}
+    />
+  );
 }
 
 export default PlayServer;

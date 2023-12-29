@@ -5,9 +5,12 @@ import styles from "./GameCanvas.module.css";
 import LoadingIcon from "@/components/LoadingIcon";
 import moment from "moment";
 import "moment/locale/fr";
+import pusherJs from "pusher-js";
+
+import { Tile } from "@/app/api/tiles/route";
 
 // types for the api requests
-import { Tile, TilesResponse } from "@/app/api/tiles/route";
+import { TilesResponse } from "@/app/api/tiles/route";
 
 moment().locale("fr");
 
@@ -15,12 +18,16 @@ type GameCanvasProps = {
   selectedPixel: MutableRefObject<{ x: number; y: number }>;
   onCanvasLoaded: () => void;
   canvasSize: MutableRefObject<{ width: number; height: number }>;
+  pusherCluster: string;
+  pusherKey: string;
 };
 
 export default function GameCanvas({
   selectedPixel,
   onCanvasLoaded,
   canvasSize,
+  pusherCluster,
+  pusherKey,
 }: GameCanvasProps) {
   const [canvasLoaded, setCanvasLoaded] = useState<boolean>(false);
 
@@ -373,6 +380,23 @@ export default function GameCanvas({
       onCanvasLoaded();
     });
   }, [onCanvasLoaded, canvasSize, canvasLoaded]);
+
+  useEffect(() => {
+    const pusher = new pusherJs(pusherKey, {
+      cluster: pusherCluster,
+    });
+
+    const channel = pusher.subscribe("epixel");
+
+    channel.bind("tile-placed", (data: Tile) => {
+      tiles.current[data.index] = data;
+      updateCanvas();
+    });
+
+    return () => {
+      pusher.unsubscribe("epixel");
+    };
+  }, [pusherCluster, pusherKey, updateCanvas]);
 
   if (!canvasLoaded) {
     return (

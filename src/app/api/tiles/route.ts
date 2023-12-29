@@ -1,4 +1,4 @@
-import prisma from "@/../prisma/client";
+import prisma from "@/clients/prisma";
 import { getServerSession } from "next-auth";
 import { options as authOptions } from "@/app/api/auth/[...nextauth]/options";
 import { NextResponse } from "next/server";
@@ -25,6 +25,7 @@ export type Tile = {
   authorName: string;
   color: (typeof colorsHex)[number];
   updatedAt: Date;
+  index: number;
 };
 
 export type TilesResponse = ApiResponse<{

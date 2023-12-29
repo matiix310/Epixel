@@ -1,7 +1,7 @@
 import type { NextAuthOptions, User } from "next-auth";
 import AzureADProvider from "next-auth/providers/azure-ad";
 import CredentialsProdivder from "next-auth/providers/credentials";
-import prisma from "@/../prisma/client";
+import prisma from "@/clients/prisma";
 
 // Crypto
 import crypto from "crypto";
