@@ -5,6 +5,18 @@
   justify-content: flex-start;
 }
 
+.mobileContainer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .topContainer {
   background: var(--text);
   border-radius: 999px;
@@ -13,7 +25,7 @@
   display: flex;
   flex-direction: row;
   height: 50px;
-  width: 100%;
+  width: 210px;
   align-items: center;
   justify-content: space-between;
 }
@@ -94,10 +106,33 @@
   transition: all 0.3s ease-in-out;
 }
 
+.mobileColorPalette {
+  position: relative;
+  margin-top: 20px;
+  width: 90%;
+  background-color: var(--text);
+  border-radius: 20px;
+  border: 3px solid var(--background);
+
+  transform: translateY(150%);
+  opacity: 0;
+  height: 0;
+  transition: all 0.3s ease-in-out;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
 .visible {
-  transform: translateX(0);
+  transform: translate(0);
   opacity: 1;
   height: 100%;
+}
+
+.mobileColorPalette.visible {
+  height: fit-content;
+  margin: 10px;
 }
 
 .gridItem {
@@ -106,6 +141,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.mobileColorPalette .gridItem {
+  flex-basis: calc(100% / 9);
 }
 
 .gridItem span:hover {

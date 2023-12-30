@@ -46,11 +46,62 @@
 }
 
 .pixelIdentifier :nth-child(1) {
-  font-size: 20px;
+  font-size: 30px;
 }
 
 .pixelIdentifier :nth-child(2),
 .pixelIdentifier :nth-child(3),
 .pixelIdentifier :nth-child(4) {
-  font-size: 15px;
+  font-size: 20px;
+}
+
+.mobilePixelIdentifier {
+  position: absolute;
+  left: 20px;
+  top: 80px;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-shadow: -3px -3px 0 var(--background), 3px -3px 0 var(--background),
+    -3px 3px 0 var(--background), 3px 3px 0 var(--background);
+}
+
+.mobilePixelIdentifier :nth-child(1) {
+  font-size: 20px;
+}
+
+.mobilePixelIdentifier :nth-child(2),
+.mobilePixelIdentifier :nth-child(3),
+.mobilePixelIdentifier :nth-child(4) {
+  font-size: 13px;
+}
+
+.zoomContainer {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-family: "arial";
+  text-align: center;
+}
+
+.zoomContainer span {
+  padding: 5px;
+  border-radius: 999px;
+  background-color: var(--text);
+  aspect-ratio: 1;
+  border: 3px solid var(--background);
+  color: var(--background);
+  font-size: 40px;
+  margin: 10px 0;
+
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }

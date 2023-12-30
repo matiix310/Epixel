@@ -10,9 +10,14 @@ import config from "@/config";
 type ColorAndCountdownProps = {
   onPlacePixel: (colorHex: string) => void;
   canvasLoaded: boolean;
+  isMobileDevice: boolean;
 };
 
-function ColorAndCountdown({ onPlacePixel, canvasLoaded }: ColorAndCountdownProps) {
+function ColorAndCountdown({
+  onPlacePixel,
+  canvasLoaded,
+  isMobileDevice,
+}: ColorAndCountdownProps) {
   var colorPalette = useRef<HTMLDivElement>(null);
   var lastPlace = useRef<number>(0);
   var [countdown, setCountdown] = useState<string>(config.delay + ":00");
@@ -92,7 +97,7 @@ function ColorAndCountdown({ onPlacePixel, canvasLoaded }: ColorAndCountdownProp
 
   return (
     <>
-      <div className={styles.container}>
+      <div className={isMobileDevice ? styles.mobileContainer : styles.container}>
         <div className={styles.topContainer}>
           <div className={styles.buttonContainer}>
             <span
@@ -111,7 +116,10 @@ function ColorAndCountdown({ onPlacePixel, canvasLoaded }: ColorAndCountdownProp
           </div>
           <span className={styles.countdown}>{countdown}</span>
         </div>
-        <div ref={colorPalette} className={styles.colorPalette}>
+        <div
+          ref={colorPalette}
+          className={isMobileDevice ? styles.mobileColorPalette : styles.colorPalette}
+        >
           {colorsHex.map((colorHex, index) => (
             <div key={index} className={styles.gridItem}>
               <span

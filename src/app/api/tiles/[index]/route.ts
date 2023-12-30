@@ -6,6 +6,7 @@ import { ApiResponse } from "../../page";
 import { Tile, colorsHex } from "../route";
 import pusher from "@/clients/pusher";
 import config from "@/config";
+import { cache } from "../route";
 
 export type GetTileResponse = ApiResponse<Tile>;
 
@@ -75,6 +76,8 @@ const setTile = async (request: Request, { params }: { params: { index: string }
   };
 
   pusher.trigger("epixel", "tile-placed", pusherData);
+
+  cache.cachedTiles[index] = pusherData;
 
   // get the tile id
   const tile = await prisma.tile.findFirst({

@@ -34,6 +34,19 @@ export type TilesResponse = ApiResponse<{
   height: number;
 }>;
 
+let fetchInterval = 5; // in minutes
+const cache: {
+  lastFetch: number;
+  cachedTiles: Tile[];
+  canvasWidth: number;
+  canvasHeight: number;
+} = {
+  lastFetch: 0,
+  cachedTiles: [],
+  canvasWidth: 0,
+  canvasHeight: 0,
+};
+
 const getTiles = async (request: Request) => {
   const session = await getServerSession(authOptions);
 
@@ -42,6 +55,18 @@ const getTiles = async (request: Request) => {
       error: true,
       message: "Your session is not valid. You can't request this api endpoint",
       data: {},
+    });
+  }
+
+  if (Date.now() - cache.lastFetch < fetchInterval * 1000 * 60) {
+    return NextResponse.json<TilesResponse>({
+      error: false,
+      message: "",
+      data: {
+        tiles: cache.cachedTiles,
+        width: cache.canvasWidth,
+        height: cache.canvasHeight,
+      },
     });
   }
 
@@ -61,7 +86,7 @@ const getTiles = async (request: Request) => {
     });
   }
 
-  const tiles = await prisma.tile.findMany({
+  const tiles = (await prisma.tile.findMany({
     where: {
       canvasId: 1,
     },
@@ -69,8 +94,14 @@ const getTiles = async (request: Request) => {
       authorName: true,
       color: true,
       updatedAt: true,
+      index: true,
     },
-  });
+  })) as Tile[];
+
+  cache.cachedTiles = tiles;
+  cache.canvasWidth = canvas.width;
+  cache.canvasHeight = canvas.height;
+  cache.lastFetch = Date.now();
 
   return NextResponse.json({
     error: false,
@@ -83,4 +114,4 @@ const getTiles = async (request: Request) => {
   });
 };
 
-export { getTiles as GET };
+export { getTiles as GET, cache };

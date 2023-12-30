@@ -20,6 +20,7 @@ type GameCanvasProps = {
   canvasSize: MutableRefObject<{ width: number; height: number }>;
   pusherCluster: string;
   pusherKey: string;
+  isMobileDevice: boolean;
 };
 
 export default function GameCanvas({
@@ -28,6 +29,7 @@ export default function GameCanvas({
   canvasSize,
   pusherCluster,
   pusherKey,
+  isMobileDevice,
 }: GameCanvasProps) {
   const [canvasLoaded, setCanvasLoaded] = useState<boolean>(false);
 
@@ -234,6 +236,43 @@ export default function GameCanvas({
     };
   }, [canvasLoaded, updateCanvas, canvasSize]);
 
+  const zoomCanvas = (dy: number) => {
+    if (
+      dy < 0 &&
+      ((squareSize.current + dy) * canvasSize.current.width <= window.innerWidth / 3 ||
+        (squareSize.current + dy) * canvasSize.current.height <= window.innerHeight / 3)
+    )
+      return;
+
+    if (
+      dy > 0 &&
+      (squareSize.current + dy >= window.innerWidth / 3 ||
+        squareSize.current + dy >= window.innerHeight / 3)
+    )
+      return;
+
+    squareSize.current += dy;
+
+    const r = (dy + squareSize.current) / squareSize.current;
+
+    const screen_center = {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    };
+
+    const u_c = {
+      x: origin.current.x - screen_center.x,
+      y: origin.current.y - screen_center.y,
+    };
+
+    origin.current = {
+      x: screen_center.x + r * u_c.x,
+      y: screen_center.y + r * u_c.y,
+    };
+
+    updateCanvas();
+  };
+
   // Set the canvas listeners and update the tiles
   // when the canvas is loaded
   useEffect(() => {
@@ -292,40 +331,8 @@ export default function GameCanvas({
       e.preventDefault();
 
       const dy = -e.deltaY / canvasSize.current.width;
-      if (
-        dy < 0 &&
-        ((squareSize.current + dy) * canvasSize.current.width <= window.innerWidth / 3 ||
-          (squareSize.current + dy) * canvasSize.current.height <= window.innerHeight / 3)
-      )
-        return;
 
-      if (
-        dy > 0 &&
-        (squareSize.current + dy >= window.innerWidth / 3 ||
-          squareSize.current + dy >= window.innerHeight / 3)
-      )
-        return;
-
-      squareSize.current += dy;
-
-      const r = (dy + squareSize.current) / squareSize.current;
-
-      const screen_center = {
-        x: window.innerWidth / 2,
-        y: window.innerHeight / 2,
-      };
-
-      const u_c = {
-        x: origin.current.x - screen_center.x,
-        y: origin.current.y - screen_center.y,
-      };
-
-      origin.current = {
-        x: screen_center.x + r * u_c.x,
-        y: screen_center.y + r * u_c.y,
-      };
-
-      updateCanvas();
+      zoomCanvas(dy);
     };
 
     const cCanvas = canvas.current;
@@ -398,6 +405,20 @@ export default function GameCanvas({
     };
   }, [pusherCluster, pusherKey, updateCanvas]);
 
+  const zoomIn = () => {
+    if (!canvas.current) return;
+
+    zoomCanvas(2);
+    updateCanvas();
+  };
+
+  const zoomOut = () => {
+    if (!canvas.current) return;
+
+    zoomCanvas(-2);
+    updateCanvas();
+  };
+
   if (!canvasLoaded) {
     return (
       <>
@@ -414,12 +435,20 @@ export default function GameCanvas({
     <>
       <span className={styles.background}></span>
       <canvas ref={canvas} className={styles.gameCanvas} />
-      <div className={styles.pixelIdentifier}>
+      <div
+        className={isMobileDevice ? styles.mobilePixelIdentifier : styles.pixelIdentifier}
+      >
         <h1 ref={identifierName}></h1>
         <h1 ref={identifierDate}></h1>
         <h1 ref={identifierHour}></h1>
         <h1 ref={identifierPosition}></h1>
       </div>
+      {isMobileDevice && (
+        <div className={styles.zoomContainer}>
+          <span onClick={zoomIn}>+</span>
+          <span onClick={zoomOut}>-</span>
+        </div>
+      )}
     </>
   );
 }

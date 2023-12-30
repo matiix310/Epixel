@@ -9,9 +9,15 @@ type PlayProps = {
   username: string;
   pusherKey: string;
   pusherCluster: string;
+  isMobileDevice: boolean;
 };
 
-export default function Play({ username, pusherKey, pusherCluster }: PlayProps) {
+export default function Play({
+  username,
+  pusherKey,
+  pusherCluster,
+  isMobileDevice,
+}: PlayProps) {
   var selectedPixel = useRef({ x: 0, y: 0 });
   var canvasSize = useRef({ width: 0, height: 0 });
   var [canvasLoaded, setCanvasLoaded] = useState<boolean>(false);
@@ -38,6 +44,7 @@ export default function Play({ username, pusherKey, pusherCluster }: PlayProps) 
     <>
       <span className={styles.background} />
       <GameCanvas
+        isMobileDevice={isMobileDevice}
         pusherKey={pusherKey}
         pusherCluster={pusherCluster}
         selectedPixel={selectedPixel}
@@ -45,8 +52,18 @@ export default function Play({ username, pusherKey, pusherCluster }: PlayProps) 
         canvasSize={canvasSize}
       />
       <div className={styles.leftContainer}>
-        <span className={styles.topTitle}>EPIXEL</span>
-        <ColorAndCountdown onPlacePixel={handlePlacePixel} canvasLoaded={canvasLoaded} />
+        <span
+          className={[styles.topTitle, isMobileDevice ? styles.mobileTopTitle : ""].join(
+            " "
+          )}
+        >
+          EPIXEL
+        </span>
+        <ColorAndCountdown
+          isMobileDevice={isMobileDevice}
+          onPlacePixel={handlePlacePixel}
+          canvasLoaded={canvasLoaded}
+        />
       </div>
     </>
   );
